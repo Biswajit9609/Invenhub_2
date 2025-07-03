@@ -132,7 +132,7 @@ export default function Navbar() {
       </NavigationMenu>
       </div>
 
-      <Link className="lg:hidden"><button className="px-4 py-2 bg-[var(--primary)] rounded-3xl text-white">Get Started</button></Link>
+      <Link to='/login' className="lg:hidden"><button className="px-4 py-2 bg-[var(--primary)] rounded-3xl text-white">Login</button></Link>
     </header>
   )
 }
