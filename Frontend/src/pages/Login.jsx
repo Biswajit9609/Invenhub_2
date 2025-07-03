@@ -72,7 +72,7 @@ function Login() {
                     {/* <!-- Sign In Button --> */}
                     <button
                         type="submit"
-                        className="w-full bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-background py-3 rounded-lg font-medium transition-colors duration-200"
+                        className="w-full bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-foreground py-3 rounded-lg font-medium transition-colors duration-200"
                     >
                         Sign in
                     </button>

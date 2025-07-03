@@ -72,7 +72,7 @@ function Signup() {
               {/* <!-- Sign Up Button --> */}
               <button
                 type="submit"
-                className="w-full text-background bg-[var(--primary)] hover:bg-[var(--primary-hover)] py-3 rounded-lg font-medium transition-colors duration-200"
+                className="w-full text-foreground bg-[var(--primary)] hover:bg-[var(--primary-hover)] py-3 rounded-lg font-medium transition-colors duration-200"
                 >
                 Sign up
               </button>
