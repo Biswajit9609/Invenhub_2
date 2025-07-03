@@ -1,13 +1,12 @@
-import React from 'react'
+import React from 'react';
 
 function Loader() {
   return (
-    <div className='h-[100vh] w-full flex flex-col justify-center items-center bg-primary'>
-      <div className='h-50 w-50 bg-primary absolute right-0 bottom-0 z-2'></div>
-      <h1 className='absolute flex justify-center items-end bg-primary text-5xl p-20 right-0 bottom-0 z-20 animate-caret-blink'>Loading...</h1>
-        <iframe src='https://my.spline.design/clonercubebinarycopy-CDMrymPlYgQX868z1XFxW6CU/' frameborder='0' width='100%' height='100%'></iframe>
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-black text-white z-50">
+      <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+      <p className="mt-4 text-xl">Loading...</p>
     </div>
-  )
+  );
 }
 
-export default Loader
+export default Loader;
