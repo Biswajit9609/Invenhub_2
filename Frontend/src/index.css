@@ -123,16 +123,14 @@
   }
 }
 *{
-  /* padding: 0;
-  margin: 0; */
   box-sizing: border-box;
 }
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none;
 }
 html {
   scrollbar-width: none;
-} */
+}
 @font-face {
     font-family: 'Invenhub';
     src: url(./assets/fonts/PlaypenSansHebrew-VariableFont_wght.ttf);
@@ -154,10 +152,6 @@ body{
   padding-right: 0;
   padding-bottom: 3px;
 }
-/* .nav-link:hover {
-  color: var(--primary);
-} */
-
 .nav-link::after {
   content: "";
   position: absolute;
@@ -175,13 +169,11 @@ body{
 
 .get-started-btn {
   position: relative;
-  /* display: inline-block; */
   background-color: var(--primary);
   border-radius: 50px;
   padding: 6px 20px;
   color: white;
   font-family: sans-serif;
-  /* font-size: 18px; */
   overflow: hidden;
   transition: transform 0.4s ease;
 }
@@ -195,7 +187,6 @@ body{
   height: 100%;
   color: white;
   font-family: 'Invenhub', sans-serif;
-  /* font-size: 18px; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -209,7 +200,3 @@ body{
 .get-started-btn:hover {
   color: transparent;
 }
-
-/* .horizontalScroll {
-  transform: translateX(-66.5%);
-} */
