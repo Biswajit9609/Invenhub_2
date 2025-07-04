@@ -127,12 +127,12 @@
   margin: 0; */
   box-sizing: border-box;
 }
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   display: none;
 }
 html {
   scrollbar-width: none;
-}
+} */
 @font-face {
     font-family: 'Invenhub';
     src: url(./assets/fonts/PlaypenSansHebrew-VariableFont_wght.ttf);
@@ -209,3 +209,7 @@ body{
 .get-started-btn:hover {
   color: transparent;
 }
+
+/* .horizontalScroll {
+  transform: translateX(-66.5%);
+} */
