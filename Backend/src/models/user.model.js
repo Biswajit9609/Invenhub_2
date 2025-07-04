@@ -40,5 +40,39 @@ const userSchema = new Schema({
     }
 },{timestamps: true});
 
+userSchema.pre('save', async function(next) {
+    if (this.isModified('password')) {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
+    next();
+});
+
+userSchema.methods.isPasswordCorrect = async function(enteredPassword){
+    return await bcrypt.compare(enteredPassword, this.password);
+}
+
+userSchema.methods.generateAccessToken = async function() {
+    return jwt.sign({ 
+        _id: this._id,
+        email: this.email,
+        fullName: this.fullName,
+    }, 
+    process.env.ACCESS_TOKEN_SECRET, 
+    { 
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN 
+    });
+}
+
+
+userSchema.methods.generateAccessToken = function() {
+    return jwt.sign({ 
+        _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET, 
+    { 
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN 
+    });
+}
 
 export const user = mongoose.model('user',userSchema)
