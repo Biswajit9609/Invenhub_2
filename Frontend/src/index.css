@@ -200,3 +200,14 @@ body{
 .get-started-btn:hover {
   color: transparent;
 }
+[data-sonner-toast][data-type="success"] {
+  background-color: #22c55e !important; /* green */
+  color: #fff;
+  border: transparent;
+}
+
+[data-sonner-toast][data-type="error"] {
+  background-color: #ef4444 !important; /* red */
+  color: #fff;
+  border: transparent;
+}

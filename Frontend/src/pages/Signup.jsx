@@ -1,9 +1,31 @@
 import LoginImage from "../assets/Sign up-illustration.svg"
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
 function Signup() {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post("http://localhost:3000/api/v1/user/register", {
+      fullName,
+      email,
+      password
+    });
+    toast.success(`${response.data.message}`);
+  } catch (error) {
+    console.log("Error during signup:",error);
+    toast.error(error.response?.data?.message || "Signup Failed");
+  }
+};
   return (
     <>
       <div className="h-[100dvh] flex my-10">
+        <Toaster />
         {/* <!-- Left Column - Form --> */}
         <div className="flex-1 flex flex-col justify-center px-8 lg:py-8 lg:px-16 xl:px-24">
           <div className="w-full max-w-md mx-auto">
@@ -19,8 +41,22 @@ function Signup() {
             </div>
 
             {/* <!-- Form --> */}
-            <form id="signupForm" className="space-y-6">
-
+            <form id="signupForm" className="space-y-6" onSubmit={handleSubmit}>
+              <div className="space-y-2">
+                <label htmlFor="fullName" className="block text-sm font-medium text-[var(--primary)]">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <input
+                    id="fullName"
+                    type="string"
+                    placeholder="John Doe"
+                    className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
+                    required
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                </div>
+              </div>
               {/* <!-- Email Field --> */}
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-medium text-[var(--primary)]">
@@ -33,6 +69,7 @@ function Signup() {
                     placeholder="example@email.com"
                     className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
                     required
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -49,6 +86,7 @@ function Signup() {
                     placeholder="••••••••"
                     className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
                     required
+                    onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
               </div>

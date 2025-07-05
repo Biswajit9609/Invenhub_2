@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const userSchema = new Schema({
@@ -9,15 +9,16 @@ const userSchema = new Schema({
         unique: true,
         trim: true,
         lowercase: true,
-
     },
     password: {
         type: String,
         required: true,
         minlength: 8,
+        trim: true,
     },
     fullName: {
         type: String,
+        trim: true,
         required: true,
     },
     role:{
@@ -27,7 +28,6 @@ const userSchema = new Schema({
     },
     profileImage: {
         type: String,
-        default: 'https://res.cloudinary.com/dav3ltw82/image/upload/v1750945100/user_antmxf.png',
     },
     storeId:{
         type: Schema.Types.ObjectId,
@@ -65,7 +65,7 @@ userSchema.methods.generateAccessToken = async function() {
 }
 
 
-userSchema.methods.generateAccessToken = function() {
+userSchema.methods.generateRefreshToken = async function() {
     return jwt.sign({ 
         _id: this._id,
     },
@@ -75,4 +75,4 @@ userSchema.methods.generateAccessToken = function() {
     });
 }
 
-export const user = mongoose.model('user',userSchema)
+export const User = mongoose.model('User',userSchema)
