@@ -3,6 +3,23 @@ import { asyncHandler } from "../utils/asyncHandler.utils.js";
 import { apiError } from "../utils/apiError.utils.js";
 import { apiResponse } from "../utils/apiResponse.utils.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
+import { cookieOptions } from "../constants.js";
+
+
+
+const generateAccessAndRefreshToken = async(userId) =>{
+    try {
+        const user = await User.findById(userId)
+        const accessToken = user.generateAccessToken()
+        const refreshToken = user.generateRefreshToken()
+
+        user.refreshToken = refreshToken
+        await user.save({validateBeforeSave: false})
+        return { accessToken, refreshToken }
+    } catch (error) {
+        throw new apiError(500, "Failed to generate access and refresh tokens. Please try again later.");
+    }
+}
 
 
 const registerUser = asyncHandler( async (req, res) => {
@@ -22,13 +39,13 @@ const registerUser = asyncHandler( async (req, res) => {
 
     // Validate for empty fields
     if (!fullName || !email || !password) {
-        throw new apiError(400, "Please provide all required fields");
+        throw new apiError(400, "Full name, email and password are required");
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email: email });
     if (existingUser) {
-        throw new apiError(400, "User already exists with this email");
+        throw new apiError(400, "Email is already registered. Please log in");
     }
 
     // email and password validation
@@ -40,7 +57,7 @@ const registerUser = asyncHandler( async (req, res) => {
         email.endsWith("@yahoo.com")
     )
 ) {
-    throw new apiError(400, "Invalid email address");
+    throw new apiError(400, "Only Gmail, Outlook, iCloud, and Yahoo email addresses are supported");
 }
 
     const passwordRequirementText = `
@@ -50,7 +67,7 @@ const registerUser = asyncHandler( async (req, res) => {
         • Contains at least one lowercase letter (a-z)
         • Contains at least one number (0-9)
         • Contains at least one special character: ~!@#$%&*
-        `.trim();
+        `
     if (
         (password.length < 8) ||
         (!/[A-Z]/.test(password)) ||
@@ -70,7 +87,7 @@ const registerUser = asyncHandler( async (req, res) => {
             const uploadedImage = await uploadOnCloudinary(profileImageLocalPath);
             profileImage = uploadedImage.url;
         } catch (error) {
-            throw new apiError(500, "Error uploading profile image");
+            throw new apiError(500, "Failed to upload profile image. Please try again later.");
         }
     } else {
         profileImage = "https://res.cloudinary.com/dav3ltw82/image/upload/v1750945100/user_antmxf.png";
@@ -89,7 +106,7 @@ const registerUser = asyncHandler( async (req, res) => {
     // Send a response back to the client
     const createdUser = await User.findById(user._id).select("-password -refreshToken");
     if (!createdUser) {
-        throw new apiError(500, "User registration failed");
+        throw new apiError(500, "User registration failed. Please try again later.");
     }
     else{
         console.log(createdUser)
@@ -105,4 +122,76 @@ const registerUser = asyncHandler( async (req, res) => {
 
 })
 
-export { registerUser };
+
+const loginUser = asyncHandler(async(req,res)=>{
+    // Steps for user login
+    // 1. get data from frontend
+    // 2. check for empty fields
+    // 3. check if user exist or not
+    // 4. check is password is correct
+    // 4. update refresh token & access token
+    // 5. send cookie
+
+
+
+    const { email, password } = req.body
+
+    if ( !email || !password ){
+        throw new apiError(400, "Email and password are required")
+    }
+    const user = await User.findOne({email})
+    if(!user){
+        throw new apiError(404, "User not found. Please check your email and try again.")
+    }
+    const isPasswordValid = await user.isPasswordCorrect(password)
+    if(!isPasswordValid){
+        throw new apiError(401, "Incorrect password. Please try again.")
+    }
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, cookieOptions)
+    .cookie("refreshToken", refreshToken, cookieOptions)
+    .json(
+        new apiResponse(
+            200,
+            {
+                user : loggedInUser, accessToken, refreshToken
+            },
+            "User logged in successfully"
+        )
+    )
+})
+
+const logoutUser = asyncHandler(async(req,res)=>{
+    await User.findOneAndUpdate(
+        req.user._id,
+        {
+            $unset:{
+                refreshToken: 1
+            },
+        },
+        {
+            new: true
+        }
+    )
+
+    return res
+    .status(200)
+    .clearCookie("accessToken",cookieOptions)
+    .clearCookie("refreshToken",cookieOptions)
+    .json(
+        new apiResponse(
+            200,
+            {},
+            "User logged out successfully"
+        )
+    )
+})
+export { 
+    registerUser,
+    loginUser,
+    logoutUser
+};

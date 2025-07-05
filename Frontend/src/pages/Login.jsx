@@ -1,9 +1,29 @@
 import { Link } from "react-router-dom"
+import { useState } from "react";
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
+import axios from "axios";
 import LoginImage from "../assets/login-illustration.svg"
 function Login() {
+      const [email, setEmail] = useState("");
+      const [password, setPassword] = useState("");
+      const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const response = await axios.post("http://localhost:3000/api/v1/user/login", {
+          email,
+          password
+        });
+        toast.success(`${response.data.message}`);
+      } catch (error) {
+        console.log("Error during Login:",error);
+        toast.error(error.response?.data?.message || "Login Failed");
+      }
+    };
   return (
     <>
         <div className="h-[100dvh] flex">
+        <Toaster />
         {/* <!-- Left Column - Form --> */}
         <div className="flex-1 flex flex-col justify-center px-8 lg:py-8 lg:px-16 xl:px-24">
             <div className="w-full max-w-md mx-auto">
@@ -19,7 +39,7 @@ function Login() {
                 </div>
 
                 {/* <!-- Form --> */}
-                <form id="signupForm" className="space-y-6">
+                <form id="signupForm" className="space-y-6" onSubmit={handleSubmit}>
                     {/* <!-- Email Field --> */}
                     <div className="space-y-2">
                         <label for="email" className="block text-sm font-medium text-[var(--primary)]">
@@ -32,6 +52,7 @@ function Login() {
                                 placeholder="example@email.com"
                                 className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
                                 required
+                                onChange={(e)=>setEmail(e.target.value)}
                             />
                             <svg className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
@@ -51,6 +72,7 @@ function Login() {
                                 placeholder="••••••••"
                                 className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
                                 required
+                                onChange={(e)=>setPassword(e.target.value)}
                             />
                             <button
                                 type="button"

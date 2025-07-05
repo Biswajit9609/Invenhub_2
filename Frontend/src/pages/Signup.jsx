@@ -1,10 +1,14 @@
-import LoginImage from "../assets/Sign up-illustration.svg"
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
+import LoginImage from "../assets/Sign up-illustration.svg"
+import axios from "axios";
+
+
 function Signup() {
+
+  
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,12 +23,19 @@ function Signup() {
     toast.success(`${response.data.message}`);
   } catch (error) {
     console.log("Error during signup:",error);
-    toast.error(error.response?.data?.message || "Signup Failed");
+    toast.error(
+  <div>
+    {error.response?.data?.message.split('\n').map((line, index) => (
+      <p key={index}>{line}</p>
+    )) || "Signup Failed"}
+  </div>
+);
+
   }
 };
   return (
     <>
-      <div className="h-[100dvh] flex my-10">
+      <div className="h-auto flex my-10">
         <Toaster />
         {/* <!-- Left Column - Form --> */}
         <div className="flex-1 flex flex-col justify-center px-8 lg:py-8 lg:px-16 xl:px-24">
@@ -110,10 +121,11 @@ function Signup() {
               {/* <!-- Sign Up Button --> */}
               <button
                 type="submit"
-                className="w-full text-foreground bg-[var(--primary)] hover:bg-[var(--primary-hover)] py-3 rounded-lg font-medium transition-colors duration-200"
-                >
+                className="w-full text-foreground bg-[var(--primary)] hover:bg-[var(--primary-hover)] focus:bg-[var(--primary-hover)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed py-3 rounded-lg font-medium transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 focus:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[var(--primary-hover)]"
+              >
                 Sign up
               </button>
+
 
               {/* <!-- Divider --> */}
               <div className="relative my-4">
