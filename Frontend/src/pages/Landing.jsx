@@ -14,7 +14,6 @@ function Landing() {
       x: "-200vw",
       scrollTrigger: {
         trigger: ".page-two",
-        markers: true,
         start: "top top",
         end: "+=305%",
         scrub: 2,
