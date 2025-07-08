@@ -4,7 +4,7 @@ import Landing from "./pages/Landing.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import Dashboard from "./pages/Dashboard.jsx"
-import Loader from "./components/Loader.jsx"; // adjust the path as needed
+import Loader from "./components/Loader.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },

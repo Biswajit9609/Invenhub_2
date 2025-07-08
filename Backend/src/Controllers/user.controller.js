@@ -4,7 +4,8 @@ import { apiError } from "../utils/apiError.utils.js";
 import { apiResponse } from "../utils/apiResponse.utils.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
 import { cookieOptions } from "../constants.js";
-
+import jwt from "jsonwebtoken";
+import { use } from "react";
 
 
 const generateAccessAndRefreshToken = async(userId) =>{
@@ -165,6 +166,7 @@ const loginUser = asyncHandler(async(req,res)=>{
     )
 })
 
+
 const logoutUser = asyncHandler(async(req,res)=>{
     await User.findOneAndUpdate(
         req.user._id,
@@ -190,8 +192,135 @@ const logoutUser = asyncHandler(async(req,res)=>{
         )
     )
 })
+
+
+const refreshAccessToken = asyncHandler(async(req,res)=>{
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+    if(!incomingRefreshToken){
+        throw new apiError(401,"Unauthorized access. Refresh token missing")
+    }
+    try {
+        const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+        const user = await User.findById(decodedToken?._id)
+        if(!user){
+            throw new apiError(400,"Invalid refresh token. User not found")
+        }
+        if(incomingRefreshToken !== user?.refreshToken){
+            throw new apiError(403, "Refresh token mismatch")
+        }
+        const { accessToken,refreshToken } = await generateAccessAndRefreshToken(user._id)
+        return res
+        .status(200)
+        .cookie("accessToken", accessToken,cookieOptions)
+        .cookie("refreshToken", refreshToken,cookieOptions)
+        .json(
+            new apiResponse(
+                200,
+                {accessToken,refreshToken},
+                "Access token refreshed successfully"
+            )
+        )
+    } catch (error) {
+        throw new apiError(401,"Invalid or expired refresh token")
+    }
+})
+
+
+const changeCurrentPassword = asyncHandler(async(req,res)=>{
+    const { oldPassword, newPassword } = req.body
+    const user = await User.findById(req.user._id)
+    const isPasswordValid = await user.isPasswordCorrect(oldPassword)
+    if(!isPasswordValid){
+        throw new apiError(400,"Incorrect Password")
+    }
+    user.password = newPassword
+    await user.save({ validateBeforeSave: false })
+    return res
+    .status(200)
+    .json(
+        new apiResponse(
+            200,
+            {},
+            "Password Changed Successfully"
+        )
+    )
+})
+
+
+const getCurrentUser = asyncHandler(async(req,res)=>{
+    return res
+    .status(200)
+    .json(200, req.user, "Current USer fetched Successfully")
+})
+
+
+const updateUserDetails = asyncHandler(async(req,res)=>{
+    const { fullName, email } = req.body
+    const user = User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set : {
+                fullName,
+                email
+            }
+        },
+        {
+            new: true
+        }
+    ).select("-password")
+
+    return res
+    .status(200)
+    .json(
+        new apiResponse(
+            200,
+            user,
+            "Account details updated Successfully"
+        )
+    )
+})
+
+
+const updateUserProfileImage = asyncHandler(async(req,res)=>{
+    const newProfilePictureLocalPath = req.file?.path
+
+    if(!newProfilePictureLocalPath){
+        throw new apiError(400,"No image selected")
+    }
+    
+    const profileImage = await uploadOnCloudinary(newProfilePictureLocalPath)
+    if(!profileImage.url){
+        throw new apiError(500, "Image upload failed, please try again later")
+    }
+
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set:{
+                profileImage: profileImage.url
+            }
+        },
+        {
+            new: true
+        }
+    ).select("-password")
+    return res
+    .status(200)
+    .json(
+        new apiResponse(
+            200,
+            user,
+            "Profile Image Updated Successfully"
+        )
+    )
+})
 export { 
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    refreshAccessToken,
+    changeCurrentPassword,
+    getCurrentUser,
+    updateUserDetails,
+    updateUserProfileImage
 };
