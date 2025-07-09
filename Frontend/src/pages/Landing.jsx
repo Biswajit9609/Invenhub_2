@@ -113,9 +113,15 @@ function Landing() {
             </div>
           </div>
         </div>
-        <div className="page-three h-auto w-full bg-background flex justify-center items-center">
-          <div className="feature-1">
-            <h1 className='text-7xl'>Powerful Features</h1>
+        <div className="page-three h-auto w-full bg-background flex flex-col justify-center items-center gap-30">
+            <h1 className='text-4xl lg:text-7xl bg-gradient-to-r from-[#2a9c8d] to-gray-800 bg-clip-text text-transparent'>Powerful Features</h1>
+          <div className="feature-1 bg-red-400 h-auto min-h-[90vh] w-full">
+            <div className='feature-description'>
+
+            </div>
+            <div className='feature-illustration'>
+              
+            </div>
           </div>
         </div>
       </div>

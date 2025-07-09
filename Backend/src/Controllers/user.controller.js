@@ -5,7 +5,6 @@ import { apiResponse } from "../utils/apiResponse.utils.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
 import { cookieOptions } from "../constants.js";
 import jwt from "jsonwebtoken";
-import { use } from "react";
 
 
 const generateAccessAndRefreshToken = async(userId) =>{
