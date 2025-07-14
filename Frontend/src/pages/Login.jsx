@@ -1,10 +1,14 @@
-import { Link } from "react-router-dom"
+import { 
+    Link,
+    useNavigate  
+} from "react-router-dom"
 import { useState } from "react";
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import axios from "axios";
 import LoginImage from "../assets/login-illustration.svg"
 function Login() {
+    const navigate = useNavigate();
       const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
       const handleSubmit = async (e) => {
@@ -14,6 +18,7 @@ function Login() {
           email,
           password
         });
+        navigate('/dashboard');
         toast.success(`${response.data.message}`);
       } catch (error) {
         console.log("Error during Login:",error);
