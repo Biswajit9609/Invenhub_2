@@ -27,6 +27,7 @@ const userSchema = new Schema({
     },
     profileImage: {
         type: String,
+        default: 'https://res.cloudinary.com/djkyapqlz/image/upload/v1753078338/rb_4707_e2lzxb.png'
     },
     storeId:{
         type: Schema.Types.ObjectId,

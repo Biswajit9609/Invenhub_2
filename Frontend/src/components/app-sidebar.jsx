@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-
+// import axios from "axios";
+import { useState,useEffect } from 'react';
 import {
   AudioWaveform,
   BookOpen,
@@ -7,9 +8,7 @@ import {
   Command,
   Frame,
   GalleryVerticalEnd,
-  Map,
   PieChart,
-  Settings2,
   LayoutDashboard ,
   Brain,
   PackageSearch,
@@ -19,7 +18,6 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
@@ -32,11 +30,6 @@ import {
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
       name: "Acme Inc",
@@ -140,6 +133,28 @@ const data = {
 export function AppSidebar({
   ...props
 }) {
+  const [user, setUser] = useState({})
+
+useEffect(() => {
+  const getUser = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/v1/user/user-data", {
+        method: "GET",
+        credentials: "include", // equivalent to axios' withCredentials: true
+      })
+      const data = await res.json()
+      console.log("Full API response:", data)
+      console.log("Hello world")
+      setUser(data.data.user)
+    } catch (error) {
+      console.error("Error fetching user:", error)
+    }
+  }
+  getUser()
+}, [])
+
+// console.log(user)
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -150,7 +165,7 @@ export function AppSidebar({
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {user && <NavUser user={user} />}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

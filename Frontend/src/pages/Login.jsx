@@ -27,7 +27,7 @@ function Login() {
     };
   return (
     <>
-        <div className="h-[100dvh] flex">
+        <div className="h-auto flex my-10">
         <Toaster />
         {/* <!-- Left Column - Form --> */}
         <div className="flex-1 flex flex-col justify-center px-8 lg:py-8 lg:px-16 xl:px-24">
