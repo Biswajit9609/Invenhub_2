@@ -6,13 +6,15 @@ import Signup from "./pages/Signup.jsx";
 import Dashboard from "./pages/Dashboard.jsx"
 import Loader from "./components/Loader.jsx";
 import Inventory from "./pages/Inventory.jsx"
+import OtpVerification from "./pages/otpVerification"
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
   { path: "/login", element: <Login /> },
   { path: "/sign-up", element: <Signup /> },
   { path: "/dashboard", element: <Dashboard /> },
-  { path: "/inventory", element: <Inventory />}
+  { path: "/inventory", element: <Inventory />},
+  { path: "/otpVerification", element: <OtpVerification />}
 ]);
 
 function App() {

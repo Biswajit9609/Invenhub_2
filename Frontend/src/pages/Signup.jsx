@@ -1,42 +1,64 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Toaster } from "@/components/ui/sonner"
-import { toast } from "sonner"
-import LoginImage from "../assets/Sign up-illustration.svg"
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 import axios from "axios";
-
+import SignupImage from "../assets/Sign up-illustration.svg";
+import LoadingSpinner from '../components/LoadingSpinner'; // Make sure to import the spinner
 
 function Signup() {
-
-  
+  const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post("https://invenhub-2.onrender.com/api/v1/user/register", {
-      fullName,
-      email,
-      password
-    });
-    toast.success(`${response.data.message}`);
-  } catch (error) {
-    console.log("Error during signup:",error);
-    toast.error(
-  <div>
-    {error.response?.data?.message.split('\n').map((line, index) => (
-      <p key={index}>{line}</p>
-    )) || "Signup Failed"}
-  </div>
-);
+  const [confirmPassword, setConfirmPassword] = useState(""); // State for confirm password
+  const [isLoading, setIsLoading] = useState(false); // State for loading animation
 
-  }
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // --- Validation Check ---
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match. Please try again.");
+      return; // Stop the submission if passwords don't match
+    }
+
+    setIsLoading(true); // Start loading animation
+
+    try {
+      await axios.post("https://invenhub-2.onrender.com/api/v1/user/register", {
+        fullName,
+        email,
+        password,
+      });
+      
+      // On success, navigate to the OTP page with the email
+      navigate('/otpVerification', { state: { email: email } });
+
+    } catch (error) {
+      console.log("Error during signup:", error);
+      // Nicely formats multi-line error messages from the backend
+      const errorMessage = error.response?.data?.message;
+      toast.error(
+        <div>
+          {errorMessage ? (
+            errorMessage.split('\n').map((line, index) => (
+              <p key={index}>{line.trim()}</p>
+            ))
+          ) : (
+            "Signup Failed"
+          )}
+        </div>
+      );
+    } finally {
+      setIsLoading(false); // Stop loading animation regardless of outcome
+    }
+  };
+
   return (
     <>
       <div className="h-auto flex my-10">
-        <Toaster />
+        <Toaster richColors position="top-center" />
         {/* <!-- Left Column - Form --> */}
         <div className="flex-1 flex flex-col justify-center px-8 lg:py-8 lg:px-16 xl:px-24">
           <div className="w-full max-w-md mx-auto">
@@ -60,10 +82,11 @@ function Signup() {
                 <div className="relative">
                   <input
                     id="fullName"
-                    type="string"
+                    type="text" // Changed from "string" to "text"
                     placeholder="John Doe"
                     className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
                     required
+                    value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                   />
                 </div>
@@ -80,6 +103,7 @@ function Signup() {
                     placeholder="example@email.com"
                     className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
                     required
+                    value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
@@ -97,8 +121,9 @@ function Signup() {
                     placeholder="••••••••"
                     className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
                     required
+                    value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    />
+                  />
                 </div>
               </div>
 
@@ -114,16 +139,19 @@ function Signup() {
                     placeholder="••••••••"
                     className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2"
                     required
-                    />
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
                 </div>
               </div>
 
               {/* <!-- Sign Up Button --> */}
               <button
                 type="submit"
-                className="w-full text-foreground bg-[var(--primary)] hover:bg-[var(--primary-hover)] focus:bg-[var(--primary-hover)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed py-3 rounded-lg font-medium transition-all duration-200 ease-in-out transform hover:-translate-y-0.5 focus:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[var(--primary-hover)]"
+                disabled={isLoading} // Disable button when loading
+                className="w-full flex justify-center items-center text-foreground bg-[var(--primary)] hover:bg-[var(--primary-hover)] focus:bg-[var(--primary-hover)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed py-3 rounded-lg font-medium transition-all duration-200 ease-in-out"
               >
-                Sign up
+                {isLoading ? <LoadingSpinner /> : "Sign up"}
               </button>
 
 
@@ -163,7 +191,7 @@ function Signup() {
 
         {/* <!-- Right Column - Background --> */}
         <div className="hidden lg:block lg:flex-1 overflow-hidden my-auto">
-          <img src={LoginImage} alt="" />
+          <img src={SignupImage} alt="Illustration of a person signing up on a large form" />
         </div>
       </div>
     </>
