@@ -137,31 +137,43 @@ export function AppSidebar({
 
 useEffect(() => {
   const getUser = async () => {
-    console.log("first")
     try {
-      console.log("second")
+      // 1. Get the token from localStorage
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        console.log("No access token found.");
+        return; // Stop if no token is available
+      }
+
+      // 2. Make the API call with the Authorization header
       const res = await axios.post(
-  "https://invenhub-2.onrender.com/api/v1/user/user-data",
-  {}, // your request body here
-  {
-    headers: {
-      "Content-Type": "application/json"
-    },
-    withCredentials: true
-  }
-);
-      console.log("third")
-      const data = await res.json()
-      console.log("Full API response:", data)
-      console.log("Hello world")
-      setUser(data.data.user)
+        "https://invenhub-2.onrender.com/api/v1/user/user-data",
+        {}, // Empty body for a POST request, as needed
+        {
+          headers: {
+            // 3. Attach the token
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // 4. Access the data correctly from the axios response
+      const responseData = res.data; 
+      
+      // Check if the data and user exist in the response
+      if (responseData && responseData.data && responseData.data.user) {
+        setUser(responseData.data.user);
+      } else {
+        console.log("User data not found in the response:", responseData);
+      }
+
     } catch (error) {
-      // console.log("error")
-      console.log("Error fetching user:", error)
+      console.error("Error fetching user:", error.response?.data?.message || error.message);
     }
-  }
-  getUser()
-}, [])
+  };
+
+  getUser();
+}, []);
 
 // console.log(user)
 

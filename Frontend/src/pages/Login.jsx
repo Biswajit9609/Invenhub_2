@@ -21,9 +21,23 @@ function Login() {
         email,
         password,
       });
-      toast.success(`${response.data.message}`);
-      // Replace history to prevent back navigation to login page
-      navigate('/dashboard', { replace: true });
+
+      // --- Store tokens in localStorage ---
+      // Your apiResponse utility wraps data, so we access it via response.data.data
+      const { accessToken, refreshToken } = response.data.data;
+      if (accessToken && refreshToken) {
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        
+        toast.success(response.data.message || "Login successful!");
+        
+        // Replace history to prevent back navigation to the login page
+        navigate('/dashboard', { replace: true });
+      } else {
+        // Handle cases where tokens might be missing in the response
+        toast.error("Login failed: Tokens not received.");
+      }
+
     } catch (error) {
       console.log("Error during Login:", error);
       toast.error(error.response?.data?.message || "Login Failed");
