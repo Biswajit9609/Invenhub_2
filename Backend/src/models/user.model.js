@@ -48,6 +48,16 @@ const userSchema = new Schema({
     verificationTokenExpiresAt:Date,
 },{timestamps: true});
 
+
+userSchema.index(
+    { createdAt: 1 }, 
+    { 
+        expireAfterSeconds: 86400,
+        partialFilterExpression: { isVerified: false } 
+    }
+);
+
+
 userSchema.pre('save', async function(next) {
     if (this.isModified('password')) {
         const salt = await bcrypt.genSalt(10);

@@ -295,7 +295,7 @@ const getCurrentUser = asyncHandler(async(req,res)=>{
 
 const updateUserDetails = asyncHandler(async(req,res)=>{
     const { fullName, email } = req.body
-    const user = User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
             $set : {
