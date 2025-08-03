@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-// import axios from "axios";
+import axios from "axios";
 import { useState,useEffect } from 'react';
 import {
   AudioWaveform,
@@ -137,17 +137,27 @@ export function AppSidebar({
 
 useEffect(() => {
   const getUser = async () => {
+    console.log("first")
     try {
-      const res = await fetch("http://localhost:3000/api/v1/user/user-data", {
-        method: "GET",
-        credentials: "include", // equivalent to axios' withCredentials: true
-      })
+      console.log("second")
+      const res = await axios.post(
+  "https://invenhub-2.onrender.com/api/v1/user/user-data",
+  {}, // your request body here
+  {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    withCredentials: true
+  }
+);
+      console.log("third")
       const data = await res.json()
       console.log("Full API response:", data)
       console.log("Hello world")
       setUser(data.data.user)
     } catch (error) {
-      console.error("Error fetching user:", error)
+      // console.log("error")
+      console.log("Error fetching user:", error)
     }
   }
   getUser()

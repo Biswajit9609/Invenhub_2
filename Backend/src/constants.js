@@ -1,8 +1,8 @@
 const DB_NAME = "invenHub";
 const cookieOptions = {
     httpOnly: true,
-    secure: true,
-    sameSite: "None"
+    secure: false,
+    sameSite: "None",
 }
 export { 
     DB_NAME,
