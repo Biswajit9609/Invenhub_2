@@ -4,6 +4,7 @@ import { apiError } from "../utils/apiError.utils.js";
 import { apiResponse } from "../utils/apiResponse.utils.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
 import { cookieOptions } from "../constants.js";
+import {sendVerificationEmail,sendWelcomeEmail } from '../middlewares/email.middleware.js'
 import jwt from "jsonwebtoken";
 
 
@@ -93,12 +94,17 @@ const registerUser = asyncHandler( async (req, res) => {
         profileImage = "https://res.cloudinary.com/dav3ltw82/image/upload/v1750945100/user_antmxf.png";
     }
 
+    const verificationToken= Math.floor(100000 + Math.random() * 900000).toString()
+    await sendVerificationEmail(email,verificationToken)
+
     // Save the user to the database
     const user = await User.create({
         fullName,
         email: email.toLowerCase(),
         password,
-        profileImage
+        profileImage,
+        verificationToken,
+        verificationTokenExpiresAt:Date.now() + 300000
     });
 
 
@@ -123,6 +129,29 @@ const registerUser = asyncHandler( async (req, res) => {
 })
 
 
+const verifyEmail= asyncHandler(async(req,res)=>{
+    try {
+        const {code}=req.body 
+        const user= await User.findOne({
+            verificationToken:code,
+            verificationTokenExpiresAt:{$gt:Date.now()}
+        })
+        if (!user) {
+            return res.status(400).json({success:false,message:"Invalid or Expired Code"})
+        }
+        user.isVerified=true;
+        user.verificationToken=undefined;
+        user.verificationTokenExpiresAt=undefined;
+        await user.save()
+        await sendWelcomeEmail(user.email,user.fullName)
+        return res.status(200).json({success:true,message:"Email Verified Successfully"})
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({success:false,message:"internal server error"})
+    }
+})
+
+
 const loginUser = asyncHandler(async(req,res)=>{
     // Steps for user login
     // 1. get data from frontend
@@ -142,6 +171,9 @@ const loginUser = asyncHandler(async(req,res)=>{
     const user = await User.findOne({email})
     if(!user){
         throw new apiError(404, "User not found. Please check your email and try again.")
+    }
+    if (!(user.isVerified)) {
+        throw new apiError(403, "Please verify your email before logging in");
     }
     const isPasswordValid = await user.isPasswordCorrect(password)
     if(!isPasswordValid){
@@ -323,6 +355,7 @@ const updateUserProfileImage = asyncHandler(async(req,res)=>{
 })
 export { 
     registerUser,
+    verifyEmail,
     loginUser,
     logoutUser,
     refreshAccessToken,

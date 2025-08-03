@@ -5,12 +5,14 @@ import {
     loginUser,
     logoutUser,
     refreshAccessToken,
-    getCurrentUser
+    getCurrentUser,
+    verifyEmail
 } from "../Controllers/user.controller.js";
 const userRouter = Router();
 
 
 userRouter.route("/register").post(registerUser);
+userRouter.route("/verify-email").post(verifyEmail);
 
 // Secure Routes
 userRouter.route("/login").post(loginUser)

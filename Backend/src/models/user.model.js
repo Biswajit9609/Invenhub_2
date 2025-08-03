@@ -37,7 +37,15 @@ const userSchema = new Schema({
     refreshToken: {
         type: String,
         default: null,
-    }
+    },
+    isVerified:{
+        type:Boolean,
+        default:false
+    },
+    resetPasswordToken:String,
+    resetPasswordExpiresAt:Date,
+    verificationToken:String,
+    verificationTokenExpiresAt:Date,
 },{timestamps: true});
 
 userSchema.pre('save', async function(next) {
