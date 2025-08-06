@@ -50,7 +50,7 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: LayoutDashboard ,
       isActive: true,
       items:[
@@ -59,7 +59,7 @@ const data = {
     },
     {
       title: "Inventory",
-      url: "#",
+      url: "/inventory",
       icon: Warehouse  ,
       isActive: true
     },
@@ -86,13 +86,13 @@ const data = {
     },
     {
       title: "Add Product",
-      url: "#",
+      url: "/add-product",
       icon: PackageSearch ,
       isActive: true
     },
     {
       title: "New Sale",
-      url: "#",
+      url: "/new-sale",
       icon: ShoppingCart ,
       isActive: true
     },
@@ -119,12 +119,12 @@ const data = {
   projects: [
     {
       name: "Add Product",
-      url: "#",
+      url: "/add-product",
       icon: Frame,
     },
     {
       name: "New Sale",
-      url: "#",
+      url: "/new-sale",
       icon: PieChart,
     }
   ],

@@ -1,6 +1,21 @@
 import { useState } from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import {
+  Activity,
+  ArrowUpRight,
+  CreditCard,
+  DollarSign,
+  Users,
+} from "lucide-react"
+
+// Import your existing layout components
 import { AppSidebar } from "@/components/app-sidebar"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+import { Separator } from "@/components/ui/separator"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,177 +24,104 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
+
+// Import shadcn/ui components for the dashboard
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
-import {
-Card,
-CardContent,
-CardDescription,
-CardHeader,
-CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card"
 import {
-ChartContainer,
-ChartLegend,
-ChartLegendContent,
-ChartTooltip,
-ChartTooltipContent,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
 } from "@/components/ui/chart"
 import {
-Select,
-SelectContent,
-SelectItem,
-SelectTrigger,
-SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select"
 
-export const description = "An interactive area chart"
-
+// --- MOCK DATA FOR A TWO-SERIES CHART ---
 const chartData = [
-{ date: "2024-04-01", desktop: 222, mobile: 150 },
-{ date: "2024-04-02", desktop: 97, mobile: 180 },
-{ date: "2024-04-03", desktop: 167, mobile: 120 },
-{ date: "2024-04-04", desktop: 242, mobile: 260 },
-{ date: "2024-04-05", desktop: 373, mobile: 290 },
-{ date: "2024-04-06", desktop: 301, mobile: 340 },
-{ date: "2024-04-07", desktop: 245, mobile: 180 },
-{ date: "2024-04-08", desktop: 409, mobile: 320 },
-{ date: "2024-04-09", desktop: 59, mobile: 110 },
-{ date: "2024-04-10", desktop: 261, mobile: 190 },
-{ date: "2024-04-11", desktop: 327, mobile: 350 },
-{ date: "2024-04-12", desktop: 292, mobile: 210 },
-{ date: "2024-04-13", desktop: 342, mobile: 380 },
-{ date: "2024-04-14", desktop: 137, mobile: 220 },
-{ date: "2024-04-15", desktop: 120, mobile: 170 },
-{ date: "2024-04-16", desktop: 138, mobile: 190 },
-{ date: "2024-04-17", desktop: 446, mobile: 360 },
-{ date: "2024-04-18", desktop: 364, mobile: 410 },
-{ date: "2024-04-19", desktop: 243, mobile: 180 },
-{ date: "2024-04-20", desktop: 89, mobile: 150 },
-{ date: "2024-04-21", desktop: 137, mobile: 200 },
-{ date: "2024-04-22", desktop: 224, mobile: 170 },
-{ date: "2024-04-23", desktop: 138, mobile: 230 },
-{ date: "2024-04-24", desktop: 387, mobile: 290 },
-{ date: "2024-04-25", desktop: 215, mobile: 250 },
-{ date: "2024-04-26", desktop: 75, mobile: 130 },
-{ date: "2024-04-27", desktop: 383, mobile: 420 },
-{ date: "2024-04-28", desktop: 122, mobile: 180 },
-{ date: "2024-04-29", desktop: 315, mobile: 240 },
-{ date: "2024-04-30", desktop: 454, mobile: 380 },
-{ date: "2024-05-01", desktop: 165, mobile: 220 },
-{ date: "2024-05-02", desktop: 293, mobile: 310 },
-{ date: "2024-05-03", desktop: 247, mobile: 190 },
-{ date: "2024-05-04", desktop: 385, mobile: 420 },
-{ date: "2024-05-05", desktop: 481, mobile: 390 },
-{ date: "2024-05-06", desktop: 498, mobile: 520 },
-{ date: "2024-05-07", desktop: 388, mobile: 300 },
-{ date: "2024-05-08", desktop: 149, mobile: 210 },
-{ date: "2024-05-09", desktop: 227, mobile: 180 },
-{ date: "2024-05-10", desktop: 293, mobile: 330 },
-{ date: "2024-05-11", desktop: 335, mobile: 270 },
-{ date: "2024-05-12", desktop: 197, mobile: 240 },
-{ date: "2024-05-13", desktop: 197, mobile: 160 },
-{ date: "2024-05-14", desktop: 448, mobile: 490 },
-{ date: "2024-05-15", desktop: 473, mobile: 380 },
-{ date: "2024-05-16", desktop: 338, mobile: 400 },
-{ date: "2024-05-17", desktop: 499, mobile: 420 },
-{ date: "2024-05-18", desktop: 315, mobile: 350 },
-{ date: "2024-05-19", desktop: 235, mobile: 180 },
-{ date: "2024-05-20", desktop: 177, mobile: 230 },
-{ date: "2024-05-21", desktop: 82, mobile: 140 },
-{ date: "2024-05-22", desktop: 81, mobile: 120 },
-{ date: "2024-05-23", desktop: 252, mobile: 290 },
-{ date: "2024-05-24", desktop: 294, mobile: 220 },
-{ date: "2024-05-25", desktop: 201, mobile: 250 },
-{ date: "2024-05-26", desktop: 213, mobile: 170 },
-{ date: "2024-05-27", desktop: 420, mobile: 460 },
-{ date: "2024-05-28", desktop: 233, mobile: 190 },
-{ date: "2024-05-29", desktop: 78, mobile: 130 },
-{ date: "2024-05-30", desktop: 340, mobile: 280 },
-{ date: "2024-05-31", desktop: 178, mobile: 230 },
-{ date: "2024-06-01", desktop: 178, mobile: 200 },
-{ date: "2024-06-02", desktop: 470, mobile: 410 },
-{ date: "2024-06-03", desktop: 103, mobile: 160 },
-{ date: "2024-06-04", desktop: 439, mobile: 380 },
-{ date: "2024-06-05", desktop: 88, mobile: 140 },
-{ date: "2024-06-06", desktop: 294, mobile: 250 },
-{ date: "2024-06-07", desktop: 323, mobile: 370 },
-{ date: "2024-06-08", desktop: 385, mobile: 320 },
-{ date: "2024-06-09", desktop: 438, mobile: 480 },
-{ date: "2024-06-10", desktop: 155, mobile: 200 },
-{ date: "2024-06-11", desktop: 92, mobile: 150 },
-{ date: "2024-06-12", desktop: 492, mobile: 420 },
-{ date: "2024-06-13", desktop: 81, mobile: 130 },
-{ date: "2024-06-14", desktop: 426, mobile: 380 },
-{ date: "2024-06-15", desktop: 307, mobile: 350 },
-{ date: "2024-06-16", desktop: 371, mobile: 310 },
-{ date: "2024-06-17", desktop: 475, mobile: 520 },
-{ date: "2024-06-18", desktop: 107, mobile: 170 },
-{ date: "2024-06-19", desktop: 341, mobile: 290 },
-{ date: "2024-06-20", desktop: 408, mobile: 450 },
-{ date: "2024-06-21", desktop: 169, mobile: 210 },
-{ date: "2024-06-22", desktop: 317, mobile: 270 },
-{ date: "2024-06-23", desktop: 480, mobile: 530 },
-{ date: "2024-06-24", desktop: 132, mobile: 180 },
-{ date: "2024-06-25", desktop: 141, mobile: 190 },
-{ date: "2024-06-26", desktop: 434, mobile: 380 },
-{ date: "2024-06-27", desktop: 448, mobile: 490 },
-{ date: "2024-06-28", desktop: 149, mobile: 200 },
-{ date: "2024-06-29", desktop: 103, mobile: 160 },
-{ date: "2024-06-30", desktop: 446, mobile: 400 },
-]
+  { date: "2024-06-01", sales: 178, subscriptions: 80 },
+  { date: "2024-06-02", sales: 470, subscriptions: 200 },
+  { date: "2024-06-03", sales: 103, subscriptions: 120 },
+  { date: "2024-06-04", sales: 439, subscriptions: 180 },
+  { date: "2024-06-05", sales: 88, subscriptions: 90 },
+  { date: "2024-06-06", sales: 294, subscriptions: 120 },
+  { date: "2024-06-07", sales: 323, subscriptions: 140 },
+  { date: "2024-06-08", sales: 385, subscriptions: 150 },
+  { date: "2024-06-09", sales: 438, subscriptions: 210 },
+  { date: "2024-06-10", sales: 155, subscriptions: 80 },
+  { date: "2024-06-11", sales: 92, subscriptions: 60 },
+  { date: "2024-06-12", sales: 492, subscriptions: 250 },
+  { date: "2024-06-13", sales: 81, subscriptions: 50 },
+  { date: "2024-06-14", sales: 426, subscriptions: 220 },
+  { date: "2024-06-15", sales: 307, subscriptions: 180 },
+  { date: "2024-06-16", sales: 371, subscriptions: 190 },
+  { date: "2024-06-17", sales: 475, subscriptions: 280 },
+  { date: "2024-06-18", sales: 107, subscriptions: 90 },
+  { date: "2024-06-19", sales: 341, subscriptions: 160 },
+  { date: "2024-06-20", sales: 408, subscriptions: 190 },
+  { date: "2024-06-21", sales: 169, subscriptions: 110 },
+  { date: "2024-06-22", sales: 317, subscriptions: 150 },
+  { date: "2024-06-23", sales: 480, subscriptions: 260 },
+  { date: "2024-06-24", sales: 132, subscriptions: 80 },
+  { date: "2024-06-25", sales: 141, subscriptions: 70 },
+  { date: "2024-06-26", sales: 434, subscriptions: 200 },
+  { date: "2024-06-27", sales: 448, subscriptions: 210 },
+  { date: "2024-06-28", sales: 149, subscriptions: 100 },
+  { date: "2024-06-29", sales: 103, subscriptions: 90 },
+  { date: "2024-06-30", sales: 446, subscriptions: 240 },
+];
 
+// --- CHART CONFIG USING YOUR CSS VARIABLES ---
 const chartConfig = {
-visitors: {
-label: "Visitors",
-},
-desktop: {
-label: "Expected Sales",
-color: "var(--chart-1)",
-},
-mobile: {
-label: "Original Sales",
-color: "var(--chart-2)",
-},
-}
+  sales: {
+    label: "Sales",
+    color: "var(--chart-1)", // Uses the color from your provided CSS
+  },
+  subscriptions: {
+    label: "Subscriptions",
+    color: "var(--chart-2)", // Uses the color from your provided CSS
+  },
+};
+
+// --- MOCK DATA FOR RECENT SALES ---
+const recentSales = [
+  { name: "Olivia Martin", email: "olivia.martin@email.com", amount: "+$1,999.00", avatar: "OM" },
+  { name: "Jackson Lee", email: "jackson.lee@email.com", amount: "+$39.00", avatar: "JL" },
+  { name: "Isabella Nguyen", email: "isabella.nguyen@email.com", amount: "+$299.00", avatar: "IN" },
+  { name: "William Kim", email: "will@email.com", amount: "+$99.00", avatar: "WK" },
+  { name: "Sofia Davis", email: "sofia.davis@email.com", amount: "+$39.00", avatar: "SD" },
+];
 
 export default function Dashboard() {
-  const [timeRange, setTimeRange] = useState("90d")
+  const [timeRange, setTimeRange] = useState("30d");
 
-const filteredData = chartData.filter((item) => {
-const date = new Date(item.date)
-const referenceDate = new Date("2024-06-30")
-let daysToSubtract = 90
-if (timeRange === "30d") {
-daysToSubtract = 30
-} else if (timeRange === "7d") {
-daysToSubtract = 7
-}
-const startDate = new Date(referenceDate)
-startDate.setDate(startDate.getDate() - daysToSubtract)
-return date >= startDate
-})
+  const filteredData = chartData.slice(-parseInt(timeRange.replace("d", "")));
+
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
+            <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    InvenHub
-                  </BreadcrumbLink>
+                  <BreadcrumbLink href="#">InvenHub</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
@@ -188,123 +130,119 @@ return date >= startDate
               </BreadcrumbList>
             </Breadcrumb>
           </div>
+          <div className="ml-auto flex items-center gap-2 px-4">
+            <Select value={timeRange} onValueChange={setTimeRange}>
+              <SelectTrigger className="w-[160px] rounded-lg sm:ml-auto">
+                <SelectValue placeholder="Select a range" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                <SelectItem value="90d" className="rounded-lg">Last 90 days</SelectItem>
+                <SelectItem value="30d" className="rounded-lg">Last 30 days</SelectItem>
+                <SelectItem value="7d" className="rounded-lg">Last 7 days</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
+
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 justify-evenly">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">$45,231.89</div>
+                <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+              </CardContent>
+            </Card>
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Subscriptions</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">+2350</div>
+                <p className="text-xs text-muted-foreground">+180.1% from last month</p>
+              </CardContent>
+            </Card>
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                <CreditCard className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">+12,234</div>
+                <p className="text-xs text-muted-foreground">+19% from last month</p>
+              </CardContent>
+            </Card>
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Active Now</CardTitle>
+                <Activity className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">+573</div>
+                <p className="text-xs text-muted-foreground">+201 since last hour</p>
+              </CardContent>
+            </Card>
           </div>
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-          <Card className="pt-0">
-          <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
-          <div className="grid flex-1 gap-1">
-          <CardTitle>Area Chart - Interactive</CardTitle>
-          <CardDescription>
-          Showing total visitors for the last 3 months
-          </CardDescription>
+
+          <div className="grid gap-4 lg:grid-cols-3">
+            <Card className="lg:col-span-2 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+              <CardHeader>
+                <CardTitle>Overview</CardTitle>
+                <CardDescription>Showing sales and subscriptions for the selected period.</CardDescription>
+              </CardHeader>
+              <CardContent className="pl-2">
+                <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
+                  <AreaChart data={filteredData}>
+                    <defs>
+                      <linearGradient id="fillSales" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--color-sales)" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="var(--color-sales)" stopOpacity={0.1} />
+                      </linearGradient>
+                      <linearGradient id="fillSubscriptions" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--color-subscriptions)" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="var(--color-subscriptions)" stopOpacity={0.1}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid vertical={false} />
+                    <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8}
+                      tickFormatter={(value) => new Date(value).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    />
+                    <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dot" />} />
+                    <Area dataKey="subscriptions" type="natural" fill="url(#fillSubscriptions)" stroke="var(--color-subscriptions)" stackId="a" />
+                    <Area dataKey="sales" type="natural" fill="url(#fillSales)" stroke="var(--color-sales)" stackId="a" />
+                    <ChartLegend content={<ChartLegendContent />} />
+                  </AreaChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+              <CardHeader>
+                <CardTitle>Recent Sales</CardTitle>
+                <CardDescription>You made 265 sales this month.</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-8">
+                {recentSales.map((sale, index) => (
+                  <div key={index} className="flex items-center gap-4">
+                    <Avatar className="hidden h-9 w-9 sm:flex">
+                      <AvatarImage src={`/avatars/0${index + 1}.png`} alt="Avatar" />
+                      <AvatarFallback>{sale.avatar}</AvatarFallback>
+                    </Avatar>
+                    <div className="grid gap-1">
+                      <p className="text-sm font-medium leading-none">{sale.name}</p>
+                      <p className="text-sm text-muted-foreground">{sale.email}</p>
+                    </div>
+                    <div className="ml-auto font-medium">{sale.amount}</div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
           </div>
-          <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger
-          className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex"
-          aria-label="Select a value"
-          >
-          <SelectValue placeholder="Last 3 months" />
-          </SelectTrigger>
-          <SelectContent className="rounded-xl">
-          <SelectItem value="90d" className="rounded-lg">
-          Last 3 months
-          </SelectItem>
-          <SelectItem value="30d" className="rounded-lg">
-          Last 30 days
-          </SelectItem>
-          <SelectItem value="7d" className="rounded-lg">
-          Last 7 days
-          </SelectItem>
-          </SelectContent>
-          </Select>
-          </CardHeader>
-          <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-          <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-          >
-          <AreaChart data={filteredData}>
-          <defs>
-          <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-          <stop
-          offset="5%"
-          stopColor="var(--color-desktop)"
-          stopOpacity={0.8}
-          />
-          <stop
-          offset="95%"
-          stopColor="var(--color-desktop)"
-          stopOpacity={0.1}
-          />
-          </linearGradient>
-          <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-          <stop
-          offset="5%"
-          stopColor="var(--color-mobile)"
-          stopOpacity={0.8}
-          />
-          <stop
-          offset="95%"
-          stopColor="var(--color-mobile)"
-          stopOpacity={0.1}
-          />
-          </linearGradient>
-          </defs>
-          <CartesianGrid vertical={false} />
-          <XAxis
-          dataKey="date"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          minTickGap={32}
-          tickFormatter={(value) => {
-          const date = new Date(value)
-          return date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          })
-          }}
-          />
-          <ChartTooltip
-          cursor={false}
-          content={
-          <ChartTooltipContent
-          labelFormatter={(value) => {
-          return new Date(value).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          })
-          }}
-          indicator="dot"
-          />
-          }
-          />
-          <Area
-          dataKey="mobile"
-          type="natural"
-          fill="url(#fillMobile)"
-          stroke="var(--color-mobile)"
-          stackId="a"
-          />
-          <Area
-          dataKey="desktop"
-          type="natural"
-          fill="url(#fillDesktop)"
-          stroke="var(--color-desktop)"
-          stackId="a"
-          />
-          <ChartLegend content={<ChartLegendContent />} />
-          </AreaChart>
-          </ChartContainer>
-          </CardContent>
-          </Card>
-        </div>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   )
