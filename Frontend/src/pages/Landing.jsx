@@ -45,7 +45,7 @@ function Landing() {
                 <h1 className='ani-text text-[3rem] md:text-8xl leading-tight'><span className='hidden lg:inline' >in</span> Your <span className='font text-[var(--primary)] inline'>Pocket</span></h1>
                 <h3 className='ani-text lg:text-2xl mt-7 font-light px-[7vw] text-center'>Track stock levels, print barcode labels, sell faster, and get <span className='lg:block'>AI-powered predictions — from your phone.</span></h3>
               </div>
-              <iframe loading='eager' className="hidden lg:block absolute left-100 top-15 z-30 max-w-[1568px] max-h-[818px] scale-100" src='https://my.spline.design/genkubgreetingrobot-q95MSKpuz9jRfgmiiVNTjz2h/' frameborder='0' width='1568px' height='768px'></iframe>
+              <iframe loading='eager' className="hidden lg:block absolute left-120 top-10 z-30 max-w-[1568px] max-h-[818px] scale-100" src='https://my.spline.design/genkubgreetingrobot-A9i0QY3zVc4JqzyDUqp49SCb/' frameborder='0' width='100%' height='100%'></iframe>
             </div>
         </div>
         <div className="page-two h-auto lg:h-[100dvh] flex bg-background mt-20 lg:mt-0">

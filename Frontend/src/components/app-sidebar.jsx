@@ -70,17 +70,17 @@ const data = {
       items: [
         {
           title: "Purchase Records",
-          url: "#",
+          url: "/purchase-transaction",
         },
         {
           title: "Sales Records",
-          url: "#",
+          url: "/sales-transaction",
         }
       ],
     },
     {
       title: "AI prediction",
-      url: "#",
+      url: "/prediction",
       icon: Brain ,
       isActive: true
     },

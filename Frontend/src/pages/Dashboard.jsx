@@ -1,21 +1,20 @@
-import { useState } from "react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { useState } from "react";
+import { CartesianGrid, XAxis, Area, AreaChart } from "recharts";
 import {
-  Activity,
-  ArrowUpRight,
-  CreditCard,
   DollarSign,
+  Activity,
+  CreditCard,
   Users,
-} from "lucide-react"
+} from "lucide-react";
 
-// Import your existing layout components
-import { AppSidebar } from "@/components/app-sidebar"
+// Import your existing layout and UI components
+import { AppSidebar } from "@/components/app-sidebar";
 import {
-  SidebarInset,
   SidebarProvider,
+  SidebarInset,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,32 +22,23 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-
-// Import shadcn/ui components for the dashboard
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/breadcrumb";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
-} from "@/components/ui/chart"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/chart";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // --- MOCK DATA FOR A TWO-SERIES CHART ---
 const chartData = [
@@ -130,21 +120,11 @@ export default function Dashboard() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <div className="ml-auto flex items-center gap-2 px-4">
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-[160px] rounded-lg sm:ml-auto">
-                <SelectValue placeholder="Select a range" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                <SelectItem value="90d" className="rounded-lg">Last 90 days</SelectItem>
-                <SelectItem value="30d" className="rounded-lg">Last 30 days</SelectItem>
-                <SelectItem value="7d" className="rounded-lg">Last 7 days</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {/* The time range selector has been moved from here */}
         </header>
 
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 justify-evenly">
+          {/* Top-level AI Insight Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -190,9 +170,22 @@ export default function Dashboard() {
 
           <div className="grid gap-4 lg:grid-cols-3">
             <Card className="lg:col-span-2 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-              <CardHeader>
-                <CardTitle>Overview</CardTitle>
-                <CardDescription>Showing sales and subscriptions for the selected period.</CardDescription>
+              <CardHeader className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <CardTitle>Overview</CardTitle>
+                  <CardDescription>Showing sales and subscriptions for the selected period.</CardDescription>
+                </div>
+                {/* The time range selector is now here */}
+                <Select value={timeRange} onValueChange={setTimeRange}>
+                  <SelectTrigger className="w-full md:w-[160px] rounded-lg">
+                    <SelectValue placeholder="Select a range" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="90d" className="rounded-lg">Last 90 days</SelectItem>
+                    <SelectItem value="30d" className="rounded-lg">Last 30 days</SelectItem>
+                    <SelectItem value="7d" className="rounded-lg">Last 7 days</SelectItem>
+                  </SelectContent>
+                </Select>
               </CardHeader>
               <CardContent className="pl-2">
                 <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
@@ -245,5 +238,5 @@ export default function Dashboard() {
         </main>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
